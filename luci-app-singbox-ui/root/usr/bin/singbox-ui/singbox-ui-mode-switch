@@ -5,7 +5,7 @@
 set -e
 ACTION="${1:-unknown}"
 
-NFT_RULE_FILE="/etc/nftables.d/singbox.nft"
+NFT_RULE_FILE="/etc/sing-box/tproxy.nft"
 TUN_IFACE="singtun0"
 
 # ── UI helpers ────────────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ remove_firewall_tun() {
 # ── nft rules ────────────────────────────────────────────────────────────────
 
 install_nft_rule() {
-    mkdir -p /etc/nftables.d
+    mkdir -p /etc/sing-box
     cat > "$NFT_RULE_FILE" << 'EOF'
 define PROXY_FWMARK = 1
 define BYPASS_MARK = 2
@@ -123,6 +123,10 @@ EOF
 uninstall_nft_rule() {
     nft delete table ip singbox 2>/dev/null || true
     rm -f "$NFT_RULE_FILE"
+}
+
+flush_tproxy_table() {
+    nft delete table ip singbox 2>/dev/null || true
 }
 
 # ── tproxy firewall include ───────────────────────────────────────────────────
@@ -200,6 +204,8 @@ case "$1" in
         install_nft_rule
         step "Configuring firewall include..."
         ensure_tproxy_firewall_include
+        step "Flushing tproxy table for firewall reload..."
+        flush_tproxy_table
         step "Reloading firewall..."
         reload_firewall
         done_ "TPROXY mode enabled"

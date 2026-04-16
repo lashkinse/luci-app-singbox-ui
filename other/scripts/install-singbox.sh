@@ -901,7 +901,7 @@ choose_mode() {
 }
 
 definition_mode() {
-    if [ -f /etc/nftables.d/singbox.nft ]; then
+    if [ -f /etc/sing-box/tproxy.nft ]; then
         show_progress "$MSG_MODE_FOUND_TPROXY"
         MODE=2
     elif uci -q get network.proxy.device | grep -q "singtun0"; then

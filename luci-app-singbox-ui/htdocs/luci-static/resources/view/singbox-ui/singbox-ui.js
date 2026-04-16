@@ -7,7 +7,7 @@
 // Constants
 // ============================================================
 
-const TPROXY_RULE_FILE = '/etc/nftables.d/singbox.nft';
+const TPROXY_RULE_FILE = '/etc/sing-box/tproxy.nft';
 const TUN_INTERFACE    = 'singtun0';
 const SINGBOX_BIN      = '/usr/bin/sing-box';
 const UPDATER_BIN      = '/usr/bin/singbox-ui/singbox-ui-updater';
