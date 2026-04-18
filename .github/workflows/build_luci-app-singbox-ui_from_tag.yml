@@ -168,18 +168,17 @@ jobs:
       - build
 
     steps:
-      - name: Download Build Artifacts
+      - name: Download IPK Artifact
         uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          name: pkg-ipk
+          path: release-ipk/
 
-      - name: Collect Release Files
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p release_files
-          find artifacts -type f \( -name "*.ipk" -o -name "*.apk" \) -exec cp {} release_files/ \;
-          ls -lah release_files
+      - name: Download APK Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pkg-apk
+          path: release-apk/
 
       - name: Generate Release Notes
         shell: bash
@@ -197,6 +196,8 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           body_path: release_notes.md
-          files: release_files/*
+          files: |
+            release-ipk/*.ipk
+            release-apk/*.apk
           draft: false
           prerelease: false
