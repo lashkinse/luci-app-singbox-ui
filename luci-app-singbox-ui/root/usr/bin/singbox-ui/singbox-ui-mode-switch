@@ -3,8 +3,9 @@
 # Actions: enable-tun | disable-tun | enable-tproxy | disable-tproxy
 
 set -e
+ACTION="${1:-unknown}"
 
-NFT_RULE_FILE="/etc/nftables.d/singbox.nft"
+NFT_RULE_FILE="/etc/sing-box/tproxy.nft"
 TUN_IFACE="singtun0"
 
 # ── UI helpers ────────────────────────────────────────────────────────────────
@@ -20,9 +21,14 @@ CROSS='✗'
 
 step()  { echo -e "${INDENT}${ARROW} ${FG_ACCENT}$1${RESET}"; }
 done_() { echo -e "${INDENT}${CHECK} ${FG_SUCCESS}$1${RESET}"; }
-die()   { echo -e "${INDENT}${CROSS} ${FG_ERROR}$1${RESET}" >&2; exit 1; }
 
-trap 'die "Mode switch failed (action: ${1:-unknown})"' ERR
+on_exit() {
+    rc="$?"
+    [ "$rc" -eq 0 ] && return 0
+    echo -e "${INDENT}${CROSS} ${FG_ERROR}Mode switch failed (action: ${ACTION})${RESET}" >&2
+}
+
+trap on_exit EXIT
 
 # ── network.proxy UCI ────────────────────────────────────────────────────────
 
@@ -79,7 +85,7 @@ remove_firewall_tun() {
 # ── nft rules ────────────────────────────────────────────────────────────────
 
 install_nft_rule() {
-    mkdir -p /etc/nftables.d
+    mkdir -p /etc/sing-box
     cat > "$NFT_RULE_FILE" << 'EOF'
 define PROXY_FWMARK = 1
 define BYPASS_MARK = 2
@@ -119,12 +125,18 @@ uninstall_nft_rule() {
     rm -f "$NFT_RULE_FILE"
 }
 
+flush_tproxy_table() {
+    nft delete table ip singbox 2>/dev/null || true
+}
+
 # ── tproxy firewall include ───────────────────────────────────────────────────
 
 ensure_tproxy_firewall_include() {
     uci set firewall.singbox_tproxy=include
     uci set firewall.singbox_tproxy.type="nftables"
     uci set firewall.singbox_tproxy.path="$NFT_RULE_FILE"
+    uci set firewall.singbox_tproxy.position="ruleset-prepend"
+    uci -q delete firewall.singbox_tproxy.chain || true
     uci set firewall.singbox_tproxy.enabled="1"
     uci commit firewall
 }
@@ -192,6 +204,8 @@ case "$1" in
         install_nft_rule
         step "Configuring firewall include..."
         ensure_tproxy_firewall_include
+        step "Flushing tproxy table for firewall reload..."
+        flush_tproxy_table
         step "Reloading firewall..."
         reload_firewall
         done_ "TPROXY mode enabled"

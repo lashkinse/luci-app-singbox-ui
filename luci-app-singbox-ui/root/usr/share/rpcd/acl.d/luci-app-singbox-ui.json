@@ -8,7 +8,6 @@
                 "/etc/init.d/singbox-ui-health-autoupdater-service": ["exec"],
                 "/etc/init.d/singbox-ui-memdoc-service": ["exec"],
                 "/etc/init.d/*": ["read"],
-                "/etc/nftables.d/*": ["read"],
                 "/etc/sing-box/*": ["read"],
                 "/usr/bin/singbox-ui/*": ["exec"],
                 "/sbin/service": ["exec"],
@@ -29,7 +28,6 @@
         "write": {
             "file": {
                 "/etc/sing-box/*": ["write"],
-                "/etc/nftables.d/*": ["write"],
                 "/sbin/uci": ["exec"],
                 "/tmp/*": ["write", "exec"]
             },
