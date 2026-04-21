@@ -1,4 +1,5 @@
 #!/bin/bash
+REPO="${REPO:-ang3el7z/luci-app-singbox-ui}"
 BRANCH="${BRANCH:-main}"
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
@@ -25,7 +26,7 @@ ensure_ui_library() {
     fi
 
     mkdir -p "$SCRIPT_DIR/lib" 2>/dev/null
-    ui_url="https://raw.githubusercontent.com/ang3el7z/luci-app-singbox-ui/$BRANCH/other/scripts/lib/ui.sh"
+    ui_url="https://raw.githubusercontent.com/$REPO/$BRANCH/other/scripts/lib/ui.sh"
     if command -v wget >/dev/null 2>&1; then
         wget -O "$UI_PATH" "$ui_url" || return 1
     elif command -v curl >/dev/null 2>&1; then
@@ -46,7 +47,7 @@ ensure_pkg_library() {
     fi
 
     mkdir -p "$SCRIPT_DIR/lib" 2>/dev/null
-    pkg_url="https://raw.githubusercontent.com/ang3el7z/luci-app-singbox-ui/$BRANCH/other/scripts/lib/pkg.sh"
+    pkg_url="https://raw.githubusercontent.com/$REPO/$BRANCH/other/scripts/lib/pkg.sh"
     if command -v wget >/dev/null 2>&1; then
         wget -O "$PKG_PATH" "$pkg_url" || return 1
     elif command -v curl >/dev/null 2>&1; then
@@ -290,8 +291,9 @@ connect_and_install() {
     local install_script_name="install.sh"
     local remote_cmd="
         export LANG=$LANG
+        export REPO=$REPO
         export BRANCH=$BRANCH
-        wget -O /root/$install_script_name https://raw.githubusercontent.com/ang3el7z/luci-app-singbox-ui/$BRANCH/$install_script_name
+        wget -O /root/$install_script_name https://raw.githubusercontent.com/$REPO/$BRANCH/$install_script_name
         chmod 0755 /root/$install_script_name
         sh /root/$install_script_name
     "
