@@ -32,9 +32,12 @@ Web interface for Sing-Box on **OpenWrt 23/24 and 25**
 
 ## ⚙️ Installation
 
+> `REPO` — GitHub repository in `owner/repo` format (default: `ang3el7z/luci-app-singbox-ui`)  
+> `BRANCH` — Branch name (default: `main`)
+
 ### 1. Run installation script:
 ```bash
-wget -O /root/install.sh https://raw.githubusercontent.com/ang3el7z/luci-app-singbox-ui/main/install.sh && chmod 0755 /root/install.sh && BRANCH="main" sh /root/install.sh
+REPO="ang3el7z/luci-app-singbox-ui" BRANCH="main" wget -O /root/install.sh "https://raw.githubusercontent.com/${REPO}/${BRANCH}/install.sh" && chmod 0755 /root/install.sh && REPO="${REPO}" BRANCH="${BRANCH}" sh /root/install.sh
 ```
 
 ### 2. Select mode:
@@ -64,7 +67,7 @@ ssh root@192.168.1.1
 ### 🔄 Refresh OpenWrt UI (if plugin not visible, need clear cache):
 `Ctrl + Shift + I` (DevTools → refresh)
 
-Press F12 to open DevTools, then right-click the “Reload” button and select “Hard Reload”.
+Press F12 to open DevTools, then right-click the "Reload" button and select "Hard Reload".
 
 ### 🗂️ Config Templates
 
@@ -81,7 +84,7 @@ Press F12 to open DevTools, then right-click the “Reload” button and select 
 
 ## 🙏 Credits
 
-You can also create a Pull Request or Issue. And don’t forget to click the star ⭐ icon to support the project.
+You can also create a Pull Request or Issue. And don't forget to click the star ⭐ icon to support the project.
 
 ---
 

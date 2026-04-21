@@ -33,9 +33,12 @@
 
 ## ⚙️ Установка
 
+> `REPO` — GitHub-репозиторий в формате `owner/repo` (по умолчанию: `ang3el7z/luci-app-singbox-ui`)  
+> `BRANCH` — Ветка (по умолчанию: `main`)
+
 ### 1. Запустите установочный скрипт:
 ```bash
-wget -O /root/install.sh https://raw.githubusercontent.com/ang3el7z/luci-app-singbox-ui/main/install.sh && chmod 0755 /root/install.sh && BRANCH="main" sh /root/install.sh
+REPO="ang3el7z/luci-app-singbox-ui" BRANCH="main" wget -O /root/install.sh "https://raw.githubusercontent.com/${REPO}/${BRANCH}/install.sh" && chmod 0755 /root/install.sh && REPO="${REPO}" BRANCH="${BRANCH}" sh /root/install.sh
 ```
 
 ### 2. Выберите режим:
